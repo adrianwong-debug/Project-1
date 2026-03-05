@@ -1,6 +1,6 @@
 ---
 author: "Adrian Wong & Zijian Wu"
-title: "Project-1 "
+title: "Wine"
 date: "2026-03-05"
 output:
   pdf_document:
