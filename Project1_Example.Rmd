@@ -5,6 +5,8 @@ date: "2025-01-22"
 output:
   pdf_document:
     number_sections: true
+editor_options: 
+  chunk_output_type: console
 ---
 ```{r echo=FALSE, include=FALSE, message=FALSE}
 library(caret) # for training and cross validation

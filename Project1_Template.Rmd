@@ -5,9 +5,20 @@ date: "2026-03-05"
 output:
   pdf_document:
     number_sections: true
+editor_options: 
+  chunk_output_type: console
 ---
 ```{r echo=FALSE, include=FALSE, message=FALSE}
 # all library load statements here
+library(caret) # for training and cross validation
+library(knitr) # for kable table rendering
+library (tidyverse) # tibble
+library(ggplot2) # plotting
+library(car) # for VIF
+# two libraries for applying robust std errors:
+library(lmtest) # for Breusch-Pagan test
+library(sandwich)
+library(modelsummary)
 
 r.version <- "4.3.2"
 seed.val <- 123456
@@ -16,6 +27,8 @@ seed.val <- 123456
 Notes: This is an Rmd file template for the project. You may edit the headings below as fits your analysis. You may add headings and sub-headings as well. Please read the requirements for project 1 milestone 1 and for the final submission.
 
 For the Overview: A brief intro to the domain to give context and your main question go in this space. You don't need a heading for the overview (unless you want one).
+
+There are many different factors on what determines the quality of a wine. The 
 
 # Data Description and Processing
 
