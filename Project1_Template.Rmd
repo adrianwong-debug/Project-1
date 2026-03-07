@@ -3,12 +3,12 @@ author: "Adrian Wong & Zijian Wu"
 title: "The Effects of Chemical Properties of Red and White Wine on Quality"
 date: "2026-03-05"
 output:
-  pdf_document:
-    number_sections: true
+pdf_document:
+number_sections: true
 editor_options: 
-  chunk_output_type: console
-  markdown: 
-    wrap: 72
+chunk_output_type: console
+markdown: 
+wrap: 72
 ---
 
 ```{r echo=FALSE, include=FALSE, message=FALSE}
@@ -37,30 +37,20 @@ main question go in this space. You don't need a heading for the
 overview (unless you want one).
 
 There are many different factors on what determines the quality of a
-wine.Winemakers and researchers analyze properties that alter the wine. The taste, stability, and overall perception of wine is fickle and understanding how each factor alters it allows the wine's quality to be evaluated.
+wine.
 
 The main research question of this analysis is how do the chemical
 properties of wine affect the expert rating of quality of wine?
 
 # Data Description and Processing
 
-The data set used in this analysis was given by our professor Gordon Anderson.
-
 Variables:\
-fixed_acidity: The measure of fixed acidity in the wine numeric\
-volatile_acidity: The measure of volatile acidity in the wine numeric\
-citric_acid: The measure of citric in the wine numeric\
-residual_sugar: The measure of residual sugar in the wine numeric\
-chlorides:The measure of chlorides in the wine numeric\
-free_sulfurdioxide: The measure of free sulfurdioxide in the wine numeric\
-total_sulfurdioxide: The total measure of sulfurdioxide in the wine numeric\
-density: The density of the wine numeric\
-pH: The pH level of the wine numeric\
-sulphates:The measure of sulphates in the wine numeric\
-alcohol:The alcohol percentage of the wine numeric\
+fixed_acidity: volatile_acidity: citric_acid: residual_sugar: chlorides:
+free_sulfurdioxide: total_sulfurdioxide: density: pH: sulphates:
+alcohol:
 
 Outcome:\
-quality: An expert rating of quality of wine. (0-10), 0-lowest, 10-highest numeric\
+quality:
 
 The data set was checked for missing values. Of the original 6,497
 observations, we removed 5 observations that contained missing values
@@ -76,8 +66,6 @@ wine.df$quality <- as.numeric(wine.df$quality)
 
 # Data Exploration
 
-In figure 1, the distribution of the outcome variable, quality, shows a mildly right skewed shape, as the frequency at index value 5 is much higher than at index value 7. 
-
 ```{r echo=FALSE, out.width="70%", out.height="35%", fig.align = 'center', fig.cap="Wine Quality index distribution."}
 hist(wine.df$quality,
 main = "", # turn off the title as using the fig.cap
@@ -86,7 +74,7 @@ ylab = "Frequency")
 ```
 
 ```{r echo=FALSE}
-# table of descriptive stats for the quality scores
+# table of descriptive stats for the performance index scores
 statistic <- c("Min", "2nd Quant. (25%)", "Mean","Median", "4th Quant. (75%)", "Max", "StdDev")
 data<-wine.df$quality
 quantiles<-quantile(data)
@@ -104,10 +92,18 @@ kable(st.tbl, caption="Wine Quality descriptive statistics")
 ```
 
 # Modeling
-
+We fitted two linear regression models to the data to investigate how predictors like fixed acidity, citirc acid, ph, and more contribute to wine quality. The first model included all predictors and second model included predictors that have been check from the VIF test. 
 ## Hypothesis
+We made one following hypothesis:\
+
+Chemical properties that has lower multilinearity(via FIV selection), will demonstrate a stronger, statistically significant positive correlation with wine quality scores compared to the saturated model
+
+null hypothesis: The removal of predictors based on VIF will result in no significant difference in the model’s adjusted r2 or predictive error compared to the original model.
+
+Alternative Hypothesis: The refined model will demonstrates a statistically significant relationship between low multilinearity chemical properties and wine quality.
 
 ## Model 1:
+We fitted a linear regression model using all predictors, with queality as the predicted variable.The estimates for the coefficients, standard errors and significance results are displayed below:
 ```{r}
 fit1 <- lm (quality ~ ., data=wine.df)
 # summary object useful for values from fit.
@@ -115,11 +111,17 @@ fit1.summary<-summary(fit1)
 coef.vals <- coef(fit1.summary)
 kable(coef.vals, caption="Summary of coefficients for model 1.")
 
-
-fit1.summary
 ```
 
+```{r echo=FALSE, results ='asis'}
+adjrsq <- fit1.summary$adj.r.squared[1]
+adjrsq
+```
+The adjusted R-squared for this model was 0.29517, which means that the model is explanining approximately 30% of the variance in the data 
 
+### Evaluation of Model 1 Fit
+
+We calculated variable inflation factor, VIF, to check for multicollinearity in the predictors.
 
 ```{r}
 vif <-vif(fit1)
@@ -127,8 +129,43 @@ vif
 
 ```
 
+The result shows that we have some multiconlinearity problem for some predictors, which means that some predictors are correlated with each other, so we need to eliminate them. 
+
+
+### Fit residuals and QQ Residuals 
+
+The Residuals and Fitted (left) shows that the dependent variable is discrete, which demonstrates that it has a heteroscedasticity. It is violates the core assumption of linear regression 
+
+The Q-Q Residuals deviate significantly at the tails, which confirms that the residuals are not normally distributed.
+
+
+```{r echo=FALSE, out.width="80%", out.height="35%", fig.align = 'center', fig.cap="Plot of of residuals vs. fitted values and Q-Q plot for model 1."}
+
+par(mfrow = c(1,2))
+# residuals vs fitted
+plot(fit1, which = 1)
+#QQ plot
+plot(fit1, which = 2)
+par(mfrow = c(1,1)) # reset to default window
+```
+
+
+### bptest
+
+We executed a Breusch-Pagan test as another check for heteroskedasticity
+
+```{r}
+bptest <-bptest(fit1)
+bptest
+```
+
+Because the p value is less than 0.05, we reject the null hypothesis, which means that we have sufficient evidence to sat that heteroscedasticity is present in the regression model. 
+
+
 
 ## Model 2:
+
+We fit a second linear regression model using only 
 
 ```{r}
 fit2 <- lm(quality~volatile_acidity+citric_acid+chlorides+free_sulfurdioxide+total_sulfurdioxide+pH+sulphates,data=wine.df)
@@ -162,9 +199,9 @@ train.control <- trainControl(method = "repeatedcv", number = 10, repeats= 3, p 
 
 RNGversion(r.version)
 set.seed(seed.val)
-fit1.train <- train(quality ~ ., data = wine.df, method = "lm", trControl = train.control)
+fit1.train <- train(performance_index ~ ., data = data.df, method = "lm", trControl = train.control)
 
-fit2.train <- train(quality~volatile_acidity+citric_acid+chlorides+free_sulfurdioxide+total_sulfurdioxide+pH+sulphates, data = wine.df, method = "lm", trControl = train.control)
+fit2.train <- train(performance_index ~ study_hrs+prior_score+practice, data = data.df, method = "lm", trControl = train.control)
 ```
 
 ```{r echo=FALSE}
@@ -191,17 +228,17 @@ kable(imb.tbl, col.names=cols, caption="Mean RMSE and standard deviation for mod
 ```{r echo=FALSE, out.width="75%", out.height="40%", fig.align = 'center', fig.cap="RMSE over 3x10=30 folds for models 1 and 2."}
 num.folds <- 30
 plot(rmse.one, 
-     xlab = "fold",
-     xaxp = c(1, num.folds, num.folds-1),
-     ylab = "rmse",
-     ylim=c(min(rmse.one,rmse.two), max(rmse.one,rmse.two)),
-     col = "blue")
+xlab = "fold",
+xaxp = c(1, num.folds, num.folds-1),
+ylab = "rmse",
+ylim=c(min(rmse.one,rmse.two), max(rmse.one,rmse.two)),
+col = "blue")
 lines(rmse.one, col = "blue")
 points(rmse.two, col="red")
 lines(rmse.two, col = "red",lty = 2)
 
 legend("bottomleft", legend=c("model 1", "model 2"),
-       col=c("blue", "red"), lty=1:2, cex=0.5)
+col=c("blue", "red"), lty=1:2, cex=0.5)
 ```
 
 
