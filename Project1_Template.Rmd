@@ -7,7 +7,10 @@ output:
     number_sections: true
 editor_options: 
   chunk_output_type: console
+  markdown: 
+    wrap: 72
 ---
+
 ```{r echo=FALSE, include=FALSE, message=FALSE}
 # all library load statements here
 library(caret) # for training and cross validation
@@ -24,34 +27,34 @@ r.version <- "4.3.2"
 seed.val <- 123456
 ```
 
-Notes: This is an Rmd file template for the project. You may edit the headings below as fits your analysis. You may add headings and sub-headings as well. Please read the requirements for project 1 milestone 1 and for the final submission.
+Notes: This is an Rmd file template for the project. You may edit the
+headings below as fits your analysis. You may add headings and
+sub-headings as well. Please read the requirements for project 1
+milestone 1 and for the final submission.
 
-For the Overview: A brief intro to the domain to give context and your main question go in this space. You don't need a heading for the overview (unless you want one).
+For the Overview: A brief intro to the domain to give context and your
+main question go in this space. You don't need a heading for the
+overview (unless you want one).
 
-There are many different factors on what determines the quality of a wine. 
+There are many different factors on what determines the quality of a
+wine.
 
-The main research question of this analysis is how do the chemical properties of wine affect the expert rating of quality of wine?
+The main research question of this analysis is how do the chemical
+properties of wine affect the expert rating of quality of wine?
 
 # Data Description and Processing
 
-Variables: \
-fixed_acidity: 
-volatile_acidity: 
-citric_acid:
-residual_sugar:
-chlorides:
-free_sulfurdioxide:
-total_sulfurdioxide:
-density:
-pH:
-sulphates:
+Variables:\
+fixed_acidity: volatile_acidity: citric_acid: residual_sugar: chlorides:
+free_sulfurdioxide: total_sulfurdioxide: density: pH: sulphates:
 alcohol:
 
 Outcome:\
 quality:
 
-
-The data set was checked for missing values. Of the original 6,497 observations, we removed 5 observations that contained missing values leaving 6,492 complete observations.
+The data set was checked for missing values. Of the original 6,497
+observations, we removed 5 observations that contained missing values
+leaving 6,492 complete observations.
 
 We used the quality as an outcome.
 
@@ -88,20 +91,108 @@ st.tbl <- cbind(statistic, value)
 kable(st.tbl, caption="Wine Quality descriptive statistics")
 ```
 
-# Modeling 
-
+# Modeling
 
 ## Hypothesis
 
-
 ## Model 1:
+```{r}
+fit1 <- lm (quality ~ ., data=wine.df)
+# summary object useful for values from fit.
+fit1.summary<-summary(fit1)
+coef.vals <- coef(fit1.summary)
+kable(coef.vals, caption="Summary of coefficients for model 1.")
 
 
-## Model 2: 
+fit1.summary
+```
+
+
+
+```{r}
+vif <-vif(fit1)
+vif
+
+```
+
+
+## Model 2:
+
+```{r}
+fit2 <- lm(quality~volatile_acidity+citric_acid+chlorides+free_sulfurdioxide+total_sulfurdioxide+pH+sulphates,data=wine.df)
+fit2.summary<-summary(fit2)
+coef.vals <- coef(fit2.summary)
+kable(coef.vals, caption="Summary of coefficients for model 2.")
+```
+
+```{r}
+bptest <-bptest(fit2)
+bptest
+```
+
+
+```{r echo=FALSE, out.width="80%", out.height="35%", fig.align = 'center', fig.cap="Plot of of residuals vs. fitted values and Q-Q plot for model 1."}
+
+par(mfrow = c(1,2))
+# residuals vs fitted
+plot(fit2, which = 1)
+#QQ plot
+plot(fit2, which = 2)
+par(mfrow = c(1,1)) # reset to default window
+```
 
 
 # Predicting with Models 1 and 2
 
 
-# Summary and Conclusions
+```{r echo=FALSE}
+train.control <- trainControl(method = "repeatedcv", number = 10, repeats= 3, p = 0.80) 
 
+RNGversion(r.version)
+set.seed(seed.val)
+fit1.train <- train(performance_index ~ ., data = data.df, method = "lm", trControl = train.control)
+
+fit2.train <- train(performance_index ~ study_hrs+prior_score+practice, data = data.df, method = "lm", trControl = train.control)
+```
+
+```{r echo=FALSE}
+label <- c("Model 1", "Model 2")
+cols<-c("Model", "Avg RMSE","Std Dev")
+# get the RMSE vectors
+rmse.one <- fit1.train$resample$RMSE
+rmse.two <- fit2.train$resample$RMSE
+
+avg.rmse1<-round(mean(rmse.one),2)
+avg.rmse2<-round(mean(rmse.two),2)
+
+sd.rmse1<-round(sd(rmse.one),4)
+sd.rmse2<-round(sd(rmse.two),4)
+
+rmse.vals <- c(avg.rmse1, avg.rmse2)
+sd.vals <- c(sd.rmse1, sd.rmse2)
+
+imb.tbl <- cbind(label, rmse.vals, sd.vals)
+kable(imb.tbl, col.names=cols, caption="Mean RMSE and standard deviation for models 1 and 2.")
+```
+
+
+```{r echo=FALSE, out.width="75%", out.height="40%", fig.align = 'center', fig.cap="RMSE over 3x10=30 folds for models 1 and 2."}
+num.folds <- 30
+plot(rmse.one, 
+     xlab = "fold",
+     xaxp = c(1, num.folds, num.folds-1),
+     ylab = "rmse",
+     ylim=c(min(rmse.one,rmse.two), max(rmse.one,rmse.two)),
+     col = "blue")
+lines(rmse.one, col = "blue")
+points(rmse.two, col="red")
+lines(rmse.two, col = "red",lty = 2)
+
+legend("bottomleft", legend=c("model 1", "model 2"),
+       col=c("blue", "red"), lty=1:2, cex=0.5)
+```
+
+
+
+
+# Summary and Conclusions
