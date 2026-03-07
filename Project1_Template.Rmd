@@ -75,6 +75,8 @@ xlab = "Index Value",
 ylab = "Frequency")
 ```
 
+Table 1 sums up the descriptive statistics of the wine quality ratings. The ratings range between 3-9. The small standard deviation of 0.87 indicates that the ratings are closely clustered around the mean (5.82).
+
 ```{r echo=FALSE}
 # table of descriptive stats for the quality scores
 statistic <- c("Min", "Mean","Median", "Max", "StdDev")
@@ -91,6 +93,7 @@ value <- c(mn,avg,md,mx,std)
 st.tbl <- cbind(statistic, value)
 kable(st.tbl, caption="Wine Quality descriptive statistics")
 ```
+While this distribution is not perfectly normal, we don't consider it a major issue for the linear regression modeling, as the size of the data is relatively large (>>50), the and shape is not particularly right or left skewed. The table and histogram shows that the distribution is mostly concentrated in the middle values, with the highest frequencies around 5 and 6, and relatively few wines receiving very low or very high ratings.
 
 # Modeling
 We fitted two linear regression models to the data to investigate how predictors like fixed acidity, citirc acid, ph, and more contribute to wine quality. The first model included all predictors and second model included predictors that have been check from the VIF test. 
