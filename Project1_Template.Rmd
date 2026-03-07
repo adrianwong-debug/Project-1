@@ -83,7 +83,7 @@ ylab = "Frequency")
 ```
 
 ```{r echo=FALSE}
-# table of descriptive stats for the performance index scores
+# table of descriptive stats for the quality scores
 statistic <- c("Min", "2nd Quant. (25%)", "Mean","Median", "4th Quant. (75%)", "Max", "StdDev")
 data<-wine.df$quality
 quantiles<-quantile(data)
