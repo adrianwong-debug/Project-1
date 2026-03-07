@@ -45,12 +45,20 @@ properties of wine affect the expert rating of quality of wine?
 # Data Description and Processing
 
 Variables:\
-fixed_acidity: volatile_acidity: citric_acid: residual_sugar: chlorides:
-free_sulfurdioxide: total_sulfurdioxide: density: pH: sulphates:
-alcohol:
+fixed_acidity: The measure of fixed acidity in the wine numeric\
+volatile_acidity: The measure of volatile acidity in the wine numeric\
+citric_acid: The measure of citric in the wine numeric\
+residual_sugar: The measure of residual sugar in the wine numeric\
+chlorides:The measure of chlorides in the wine numeric\
+free_sulfurdioxide: The measure of free sulfurdioxide in the wine numeric\
+total_sulfurdioxide: The total measure of sulfurdioxide in the wine numeric\
+density: The density of the wine numeric\
+pH: The pH level of the wine numeric\
+sulphates:The measure of sulphates in the wine numeric\
+alcohol:The alcohol percentage of the wine numeric\
 
 Outcome:\
-quality:
+quality: An expert rating of quality of wine. (0-10), 0-lowest, 10-highest numeric\
 
 The data set was checked for missing values. Of the original 6,497
 observations, we removed 5 observations that contained missing values
