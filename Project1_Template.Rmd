@@ -191,9 +191,7 @@ plot(fit2, which = 2)
 par(mfrow = c(1,1)) # reset to default window
 ```
 
-
 # Predicting with Models 1 and 2
-
 
 ```{r echo=FALSE}
 train.control <- trainControl(method = "repeatedcv", number = 10, repeats= 3, p = 0.80) 
