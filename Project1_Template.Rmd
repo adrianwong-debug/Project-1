@@ -70,6 +70,23 @@ xlab = "Index Value",
 ylab = "Frequency")
 ```
 
+```{r echo=FALSE}
+# table of descriptive stats for the performance index scores
+statistic <- c("Min", "2nd Quant. (25%)", "Mean","Median", "4th Quant. (75%)", "Max", "StdDev")
+data<-wine.df$quality
+quantiles<-quantile(data)
+# extracting the number with as.numeric because quantiles[2] is a named number.
+second.quant<-as.numeric(quantiles[2])
+fourth.quant<-as.numeric(quantiles[4])
+mn<-min(data)
+mx<-max(data)
+avg<-round(mean(data), 2)
+md<-median(data)
+std<-round(sd(data), 2)
+value <- c(mn,second.quant,avg,md,fourth.quant,mx,std)
+st.tbl <- cbind(statistic, value)
+kable(st.tbl, caption="Wine Quality descriptive statistics")
+```
 
 # Modeling 
 
