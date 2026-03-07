@@ -44,6 +44,8 @@ properties of wine affect the expert rating of quality of wine?
 
 # Data Description and Processing
 
+The data set used in this analysis was given by our professor Gordon Anderson.
+
 Variables:\
 fixed_acidity: The measure of fixed acidity in the wine numeric\
 volatile_acidity: The measure of volatile acidity in the wine numeric\
