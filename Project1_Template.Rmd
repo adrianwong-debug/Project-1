@@ -46,9 +46,29 @@ density:
 pH:
 sulphates:
 alcohol:
+
+Outcome:\
 quality:
 
+
+The data set was checked for missing values. Of the original 6,497 observations, we removed 5 observations that contained missing values leaving 6,492 complete observations.
+
+We used the quality as an outcome.
+
+```{r echo=FALSE, include=FALSE}
+wine.df <- read.csv("dataset4.csv")
+wine.df <- na.omit(wine.df)
+wine.df$quality <- as.numeric(wine.df$quality)
+```
+
 # Data Exploration
+
+```{r echo=FALSE, out.width="70%", out.height="35%", fig.align = 'center', fig.cap="Wine Quality index distribution."}
+hist(wine.df$quality,
+main = "", # turn off the title as using the fig.cap
+xlab = "Index Value",
+ylab = "Frequency")
+```
 
 
 # Modeling 
