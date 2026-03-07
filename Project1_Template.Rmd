@@ -27,15 +27,6 @@ r.version <- "4.3.2"
 seed.val <- 123456
 ```
 
-Notes: This is an Rmd file template for the project. You may edit the
-headings below as fits your analysis. You may add headings and
-sub-headings as well. Please read the requirements for project 1
-milestone 1 and for the final submission.
-
-For the Overview: A brief intro to the domain to give context and your
-main question go in this space. You don't need a heading for the
-overview (unless you want one).
-
 There are many different factors on what determines the quality of a
 wine. Winemakers and researchers analyze properties that alter the wine. The taste, stability, and overall perception of wine is fickle and understanding how each factor alters it allows the wine's quality to be evaluated.
 
@@ -56,10 +47,9 @@ density: The density of the wine numeric\
 pH: The pH level of the wine numeric\
 sulphates:The measure of sulphates in the wine numeric\
 alcohol:The alcohol percentage of the wine numeric\
-
+\par
 Outcome:\
 quality: An expert rating of quality of wine. (0-10), 0-lowest, 10-highest numeric\
-
 
 The data set was checked for missing values. Of the original 6,497
 observations, we removed 5 observations that contained missing values
@@ -74,6 +64,8 @@ wine.df$quality <- as.numeric(wine.df$quality)
 ```
 
 # Data Exploration
+
+In figure 1, the distribution of the outcome variable, quality, shows a mildly right skewed shape, as the mean is roughly the same value as the median. (5.82 is close to 6)
 
 ```{r echo=FALSE, out.width="70%", out.height="35%", fig.align = 'center', fig.cap="Wine Quality index distribution."}
 hist(wine.df$quality,
