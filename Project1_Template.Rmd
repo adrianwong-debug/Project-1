@@ -37,7 +37,7 @@ main question go in this space. You don't need a heading for the
 overview (unless you want one).
 
 There are many different factors on what determines the quality of a
-wine.
+wine.Winemakers and researchers analyze properties that alter the wine. The taste, stability, and overall perception of wine is fickle and understanding how each factor alters it allows the wine's quality to be evaluated.
 
 The main research question of this analysis is how do the chemical
 properties of wine affect the expert rating of quality of wine?
@@ -76,6 +76,8 @@ wine.df$quality <- as.numeric(wine.df$quality)
 
 # Data Exploration
 
+In figure 1, the distribution of the outcome variable, quality, shows a mildly right skewed shape, as the frequency at index value 5 is much higher than at index value 7. 
+
 ```{r echo=FALSE, out.width="70%", out.height="35%", fig.align = 'center', fig.cap="Wine Quality index distribution."}
 hist(wine.df$quality,
 main = "", # turn off the title as using the fig.cap
@@ -84,7 +86,7 @@ ylab = "Frequency")
 ```
 
 ```{r echo=FALSE}
-# table of descriptive stats for the performance index scores
+# table of descriptive stats for the quality scores
 statistic <- c("Min", "2nd Quant. (25%)", "Mean","Median", "4th Quant. (75%)", "Max", "StdDev")
 data<-wine.df$quality
 quantiles<-quantile(data)
@@ -160,9 +162,9 @@ train.control <- trainControl(method = "repeatedcv", number = 10, repeats= 3, p 
 
 RNGversion(r.version)
 set.seed(seed.val)
-fit1.train <- train(performance_index ~ ., data = data.df, method = "lm", trControl = train.control)
+fit1.train <- train(quality ~ ., data = wine.df, method = "lm", trControl = train.control)
 
-fit2.train <- train(performance_index ~ study_hrs+prior_score+practice, data = data.df, method = "lm", trControl = train.control)
+fit2.train <- train(quality~volatile_acidity+citric_acid+chlorides+free_sulfurdioxide+total_sulfurdioxide+pH+sulphates, data = wine.df, method = "lm", trControl = train.control)
 ```
 
 ```{r echo=FALSE}
