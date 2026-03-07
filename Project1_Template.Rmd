@@ -1,4 +1,5 @@
 ---
+hi zijian
 author: "Adrian Wong & Zijian Wu"
 title: "The Effects of Chemical Properties of Red and White Wine on Quality"
 date: "2026-03-05"
